@@ -127,6 +127,8 @@ export default defineConfig(
         "no-useless-escape": "warn",
         "@typescript-eslint/no-unused-expressions": "warn",
         "@typescript-eslint/consistent-type-imports": "error",
+        "react-refresh/only-export-components": "warn",
+        "import/no-unresolved": "off",
       },
     },
   ],
