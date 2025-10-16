@@ -195,7 +195,6 @@ const formConfig: FormConfig<FormValues> = [
     name: "enableBeta",
     label: "体验新版界面",
     description: "开关控件",
-    tips: "开启后将收到最新特性预览",
     orientation: "horizontal",
     type: "switch",
     config: {},

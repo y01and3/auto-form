@@ -99,7 +99,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
         </Select>)
     }
     case "checkbox":
-      return (<>
+      return (<Field orientation="horizontal">
         <Checkbox
           checked={field.value}
           disabled={config.config.disabled}
@@ -113,7 +113,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
         >
           {config.config.label}
         </FieldLabel>
-      </>)
+      </Field>)
     case "checkbox-group":
       return (
         <FieldGroup data-slot="checkbox-group">
@@ -160,7 +160,9 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
           ))
           }
         </FieldGroup >)
-    case "radio-group":
+    case "radio-group": {
+      const cardMod = config.config.options.findIndex((option) => option.description) !== -1
+
       return (
         <RadioGroup
           aria-invalid={fieldState.invalid}
@@ -169,7 +171,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
           onValueChange={field.onChange}
         >
           {config.config.options.map((option) => {
-            if (!option.description)
+            if (!cardMod)
               return (
                 <Field
                   key={option.value}
@@ -200,9 +202,9 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
                 >
                   <FieldContent>
                     <FieldTitle>{option.label}</FieldTitle>
-                    <FieldDescription>
+                    {option.description && <FieldDescription>
                       {option.description}
-                    </FieldDescription>
+                    </FieldDescription>}
                   </FieldContent>
                   <RadioGroupItem
                     aria-invalid={fieldState.invalid}
@@ -214,6 +216,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
             )
           })}
         </RadioGroup>)
+    }
     case "switch":
       return (
         <Switch

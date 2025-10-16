@@ -11,7 +11,6 @@ export type FormConfig<T> = T extends object
           name: K;
           label: string;
           description?: string;
-          tips?: string;
           orientation?: "vertical" | "horizontal" | "responsive";
         },
         ItemConfig
@@ -24,6 +23,7 @@ type Merge<F, S, T = F & S> = { [K in keyof T]: T[K] };
 export type ItemConfig = {
   [K in keyof Config]: {
     type: K;
+    tips?: K extends "input"|"textarea"|"input-group"|"textarea-group"|"select"|"checkbox" ? string : never;
     config: Config[K];
   };
 }[keyof Config];
@@ -73,10 +73,10 @@ type Config = {
       disabled?: boolean;
       description?: string;
     }[];
-  }
+  };
   switch: {
     disabled?: boolean;
-  }
+  };
 };
 
 type InputGroupAddon = {
