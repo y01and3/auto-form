@@ -23,6 +23,7 @@ export default defineConfig(
       "node_modules",
       ".react-router",
       "!.storybook",
+      "src/components/ui/*"
     ]),
     ...storybook.configs["flat/recommended"],
     reactHooks.configs.flat.recommended,
