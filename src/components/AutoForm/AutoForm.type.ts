@@ -23,7 +23,15 @@ type Merge<F, S, T = F & S> = { [K in keyof T]: T[K] };
 export type ItemConfig = {
   [K in keyof Config]: {
     type: K;
-    tips?: K extends "input"|"textarea"|"input-group"|"textarea-group"|"select"|"checkbox" ? string : never;
+    tips?: K extends
+      | "input"
+      | "textarea"
+      | "input-group"
+      | "textarea-group"
+      | "select"
+      | "checkbox"
+      ? string
+      : never;
     config: Config[K];
   };
 }[keyof Config];
@@ -32,7 +40,7 @@ type Config = {
   raw: (
     field: ControllerRenderProps,
     fieldState: ControllerFieldState,
-    id?: string
+    id?: string,
   ) => React.ReactNode;
   input: React.ComponentProps<"input">;
   textarea: React.ComponentProps<"textarea">;

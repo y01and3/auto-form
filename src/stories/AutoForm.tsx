@@ -1,3 +1,4 @@
+import type { FormConfig } from "@/components/AutoForm/AutoForm.type";
 import type {
   DefaultValues,
   SubmitErrorHandler,
@@ -6,29 +7,16 @@ import type {
 
 import * as z from "zod";
 
-import type { FormConfig } from "@/components/AutoForm/AutoForm.type";
 import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "至少输入两个字符"),
-  bio: z
-    .string()
-    .min(10, "至少输入 10 个字符"),
-  website: z
-    .string()
-    .min(5, "请至少输入 5 个字符"),
-  projectSummary: z
-    .string()
-    .min(10, "请至少输入 10 个字符"),
+  fullName: z.string().min(2, "至少输入两个字符"),
+  bio: z.string().min(10, "至少输入 10 个字符"),
+  website: z.string().min(5, "请至少输入 5 个字符"),
+  projectSummary: z.string().min(10, "请至少输入 10 个字符"),
   role: z.string({ error: "请选择一个角色" }),
-  agreement: z
-    .boolean()
-    .refine((value) => value === true, "必须接受协议"),
-  interests: z
-    .array(z.string())
-    .min(1, "至少选择一个兴趣方向"),
+  agreement: z.boolean().refine((value) => value === true, "必须接受协议"),
+  interests: z.array(z.string()).min(1, "至少选择一个兴趣方向"),
   notification: z.enum(["email", "sms", "push"]),
   enableBeta: z.boolean(),
   quickTemplate: z.string().optional().default(""),
@@ -245,4 +233,4 @@ const handleInvalid: SubmitErrorHandler<FormValues> = (errors) => {
   console.warn("校验失败", errors);
 };
 
-export { formSchema, formConfig, defaultValues, handleSubmit, handleInvalid }
+export { formSchema, formConfig, defaultValues, handleSubmit, handleInvalid };

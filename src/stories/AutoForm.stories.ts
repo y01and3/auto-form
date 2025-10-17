@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import AutoForm from "@/components/AutoForm/AutoForm";
+
 import {
   formSchema,
   formConfig,
