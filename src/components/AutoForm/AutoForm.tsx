@@ -11,6 +11,7 @@ import type {
 import type * as z from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import {
@@ -56,10 +57,9 @@ const AutoForm = <Schema extends z.ZodObject>({
       >
         <FieldGroup>
           {config.map((config, index) => (
-            <>
+            <React.Fragment key={`form-${formId}-${config.name}`}>
               {index > 0 && <FieldSeparator />}
               <Controller
-                key={`form-${formId}-${config.name}`}
                 control={form.control}
                 name={config.name as Path<z.input<Schema>>}
                 render={({ field, fieldState }) => (
@@ -104,7 +104,7 @@ const AutoForm = <Schema extends z.ZodObject>({
                   </Field>
                 )}
               />
-            </>
+            </React.Fragment>
           ))}
         </FieldGroup>
       </form>

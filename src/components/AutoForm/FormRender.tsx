@@ -135,7 +135,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
               switch (option.type) {
                 case "group":
                   return (
-                    <SelectGroup>
+                    <SelectGroup key={`${id}-group-${option.label}`}>
                       <SelectLabel>{option.label}</SelectLabel>
                       {option.children.map((opt) => (
                         <SelectItem
