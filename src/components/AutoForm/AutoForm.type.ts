@@ -67,6 +67,7 @@ type Config = {
     disabled?: boolean;
   };
   "checkbox-group": {
+    style?: "text" | "card" | "auto";
     options: {
       label: string;
       value: string | number;
@@ -75,6 +76,7 @@ type Config = {
     }[];
   };
   "radio-group": {
+    style?: "text" | "card" | "auto";
     options: {
       label: string;
       value: string;

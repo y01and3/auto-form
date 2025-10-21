@@ -13,6 +13,7 @@ import type * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { ZodOptional } from "zod";
 
 import {
   Field,
@@ -25,6 +26,8 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 
+import { Button } from "../ui/button";
+
 import FormRender from "./FormRender";
 
 export interface AutoFormProps<Schema extends z.ZodObject> {
@@ -34,6 +37,10 @@ export interface AutoFormProps<Schema extends z.ZodObject> {
   onInvalid?: SubmitErrorHandler<z.input<Schema>>;
   defaultValue?: DefaultValues<z.input<Schema>>;
   id?: string;
+  requiredSign?: boolean;
+  removeFooter?: boolean;
+  resetButtonName?: string;
+  submitButtonName?: string;
 }
 const AutoForm = <Schema extends z.ZodObject>({
   formSchema,
@@ -42,22 +49,27 @@ const AutoForm = <Schema extends z.ZodObject>({
   onSubmit,
   onInvalid,
   id,
+  requiredSign = false,
+  removeFooter = false,
+  resetButtonName,
+  submitButtonName,
 }: AutoFormProps<Schema>) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValue,
   });
-  const formId = id ? id : window.crypto.randomUUID();
+  const formId = `form-${id ? id : window.crypto.randomUUID()}`;
 
   return (
     <div style={{ width: "750px" }}>
       <form
-        id={`form-${formId}`}
+        className="m-6"
+        id={`${formId}`}
         onSubmit={form.handleSubmit(onSubmit, onInvalid)}
       >
         <FieldGroup>
           {config.map((config, index) => (
-            <React.Fragment key={`form-${formId}-${config.name}`}>
+            <React.Fragment key={`${formId}-${config.name}`}>
               {index > 0 && <FieldSeparator />}
               <Controller
                 control={form.control}
@@ -71,10 +83,30 @@ const AutoForm = <Schema extends z.ZodObject>({
                       {["checkbox", "checkbox-group", "radio-group"].includes(
                         config.type,
                       ) ? (
-                        <FieldLegend>{config.label}</FieldLegend>
+                        <FieldLegend>
+                          <p>
+                            {config.label}
+                            {requiredSign &&
+                              !(
+                                formSchema.shape[config.name] instanceof
+                                ZodOptional
+                              ) && (
+                                <span className="text-destructive ml-1">*</span>
+                              )}
+                          </p>
+                        </FieldLegend>
                       ) : (
-                        <FieldLabel htmlFor={`form-${formId}-${config.name}`}>
-                          {config.label}
+                        <FieldLabel htmlFor={`${formId}-${config.name}`}>
+                          <p>
+                            {config.label}
+                            {requiredSign &&
+                              !(
+                                formSchema.shape[config.name] instanceof
+                                ZodOptional
+                              ) && (
+                                <span className="text-destructive ml-1">*</span>
+                              )}
+                          </p>
                         </FieldLabel>
                       )}
                       {config?.description && (
@@ -88,7 +120,10 @@ const AutoForm = <Schema extends z.ZodObject>({
                       config={config}
                       field={field as unknown as ControllerRenderProps}
                       fieldState={fieldState}
-                      id={`form-${formId}-${config.name}`}
+                      id={`${formId}-${config.name}`}
+                      required={
+                        !(formSchema.shape[config.name] instanceof ZodOptional)
+                      }
                     />
 
                     {"tips" in config
@@ -108,6 +143,16 @@ const AutoForm = <Schema extends z.ZodObject>({
           ))}
         </FieldGroup>
       </form>
+      {!removeFooter && (
+        <Field orientation="horizontal">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            {resetButtonName ?? "Reset"}
+          </Button>
+          <Button form={`${formId}`} type="submit">
+            {submitButtonName ?? "Submit"}
+          </Button>
+        </Field>
+      )}
     </div>
   );
 };

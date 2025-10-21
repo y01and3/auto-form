@@ -41,9 +41,16 @@ interface FormRenderProps {
   fieldState: ControllerFieldState;
   config: ItemConfig;
   id?: string;
+  required?: boolean;
 }
 
-const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
+const FormRender = ({
+  field,
+  fieldState,
+  config,
+  id,
+  required = false,
+}: FormRenderProps) => {
   switch (config.type) {
     case "raw":
       return config.config(field, fieldState, id);
@@ -54,6 +61,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
           aria-invalid={fieldState.invalid}
           id={`${id}`}
           {...config.config}
+          required={required}
         />
       );
     case "textarea":
@@ -63,6 +71,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
           aria-invalid={fieldState.invalid}
           id={`${id}`}
           {...config.config}
+          required={required}
         />
       );
     case "input-group":
@@ -73,6 +82,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
             aria-invalid={fieldState.invalid}
             id={`${id}`}
             {...config.config.input}
+            required={required}
           />
           {config.config.addons.map((addon) => (
             <InputGroupAddon key={addon.id} align={addon.align}>
@@ -95,6 +105,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
             aria-invalid={fieldState.invalid}
             id={`${id}`}
             {...config.config.textarea}
+            required={required}
           />
           {config.config.addons.map((addon) => (
             <InputGroupAddon key={addon.id} align={addon.align}>
@@ -116,6 +127,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
         <Select
           disabled={config.config.disabled}
           name={field.name}
+          required={required}
           value={field.value}
           onValueChange={field.onChange}
         >
@@ -176,6 +188,7 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
             disabled={config.config.disabled}
             id={`${id}`}
             name={field.name}
+            required={required}
             onCheckedChange={field.onChange}
           />
           <FieldLabel className={config.config.className} htmlFor={`${id}`}>
@@ -183,68 +196,145 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
           </FieldLabel>
         </Field>
       );
-    case "checkbox-group":
+    case "checkbox-group": {
+      const cardMod =
+        !config.config.style || config.config.style === "auto"
+          ? config.config.options.findIndex((option) => option.description) !==
+            -1
+          : config.config.style === "text"
+            ? false
+            : true;
+
       return (
         <FieldGroup data-slot="checkbox-group">
-          {config.config.options.map((option) => (
-            <Field
-              key={option.value}
-              data-invalid={fieldState.invalid}
-              orientation="horizontal"
-            >
-              <Checkbox
-                aria-invalid={fieldState.invalid}
-                checked={field.value.includes(option.value)}
-                disabled={option.disabled}
-                id={`${id}-${option.value}`}
-                name={field.name}
-                onCheckedChange={(checked) => {
-                  const newValue = checked
-                    ? [...field.value, option.value]
-                    : field.value.filter(
-                        (value: typeof option.value) => value !== option.value,
-                      );
-
-                  field.onChange(newValue);
-                }}
-              />
-              {option.description && (
-                <FieldContent>
-                  <FieldLabel
-                    className="font-normal"
-                    htmlFor={`${id}-${option.value}`}
-                  >
-                    {option.label}
-                  </FieldLabel>
-                  <FieldDescription>{option.description}</FieldDescription>
-                </FieldContent>
-              )}
-              {!option.description && (
+          {cardMod
+            ? config.config.options.map((option) => (
                 <FieldLabel
-                  className="font-normal"
+                  key={option.value}
                   htmlFor={`${id}-${option.value}`}
                 >
-                  {option.label}
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    orientation="horizontal"
+                  >
+                    <FieldContent>
+                      <FieldTitle>{option.label}</FieldTitle>
+                      {option.description && (
+                        <FieldDescription>
+                          {option.description}
+                        </FieldDescription>
+                      )}
+                    </FieldContent>
+                    <Checkbox
+                      aria-invalid={fieldState.invalid}
+                      checked={field.value.includes(option.value)}
+                      disabled={option.disabled}
+                      id={`${id}-${option.value}`}
+                      name={field.name}
+                      onCheckedChange={(checked) => {
+                        const newValue = checked
+                          ? [...field.value, option.value]
+                          : field.value.filter(
+                              (value: typeof option.value) =>
+                                value !== option.value,
+                            );
+
+                        field.onChange(newValue);
+                      }}
+                    />
+                  </Field>
                 </FieldLabel>
-              )}
-            </Field>
-          ))}
+              ))
+            : config.config.options.map((option) => (
+                <Field
+                  key={option.value}
+                  data-invalid={fieldState.invalid}
+                  orientation="horizontal"
+                >
+                  <Checkbox
+                    aria-invalid={fieldState.invalid}
+                    checked={field.value.includes(option.value)}
+                    disabled={option.disabled}
+                    id={`${id}-${option.value}`}
+                    name={field.name}
+                    onCheckedChange={(checked) => {
+                      const newValue = checked
+                        ? [...field.value, option.value]
+                        : field.value.filter(
+                            (value: typeof option.value) =>
+                              value !== option.value,
+                          );
+
+                      field.onChange(newValue);
+                    }}
+                  />
+                  {option.description ? (
+                    <FieldContent>
+                      <FieldLabel
+                        className="font-normal"
+                        htmlFor={`${id}-${option.value}`}
+                      >
+                        {option.label}
+                      </FieldLabel>
+                      <FieldDescription>{option.description}</FieldDescription>
+                    </FieldContent>
+                  ) : (
+                    <FieldLabel
+                      className="font-normal"
+                      htmlFor={`${id}-${option.value}`}
+                    >
+                      {option.label}
+                    </FieldLabel>
+                  )}
+                </Field>
+              ))}
         </FieldGroup>
       );
+    }
     case "radio-group": {
       const cardMod =
-        config.config.options.findIndex((option) => option.description) !== -1;
+        !config.config.style || config.config.style === "auto"
+          ? config.config.options.findIndex((option) => option.description) !==
+            -1
+          : config.config.style === "text"
+            ? false
+            : true;
 
       return (
         <RadioGroup
           aria-invalid={fieldState.invalid}
           name={field.name}
+          required={required}
           value={field.value}
           onValueChange={field.onChange}
         >
-          {config.config.options.map((option) => {
-            if (!cardMod)
-              return (
+          {cardMod
+            ? config.config.options.map((option) => (
+                <FieldLabel
+                  key={option.value}
+                  htmlFor={`${id}-${option.value}`}
+                >
+                  <Field
+                    data-invalid={fieldState.invalid}
+                    orientation="horizontal"
+                  >
+                    <FieldContent>
+                      <FieldTitle>{option.label}</FieldTitle>
+                      {option.description && (
+                        <FieldDescription>
+                          {option.description}
+                        </FieldDescription>
+                      )}
+                    </FieldContent>
+                    <RadioGroupItem
+                      aria-invalid={fieldState.invalid}
+                      id={`${id}-${option.value}`}
+                      value={option.value}
+                    />
+                  </Field>
+                </FieldLabel>
+              ))
+            : config.config.options.map((option) => (
                 <Field
                   key={option.value}
                   data-invalid={fieldState.invalid}
@@ -255,36 +345,26 @@ const FormRender = ({ field, fieldState, config, id }: FormRenderProps) => {
                     id={`${id}-${option.value}`}
                     value={option.value}
                   />
-                  <FieldLabel
-                    className="font-normal"
-                    htmlFor={`${id}-${option.value}`}
-                  >
-                    {option.label}
-                  </FieldLabel>
-                </Field>
-              );
-
-            return (
-              <FieldLabel key={option.value} htmlFor={`${id}-${option.value}`}>
-                <Field
-                  data-invalid={fieldState.invalid}
-                  orientation="horizontal"
-                >
-                  <FieldContent>
-                    <FieldTitle>{option.label}</FieldTitle>
-                    {option.description && (
+                  {option.description ? (
+                    <FieldContent>
+                      <FieldLabel
+                        className="font-normal"
+                        htmlFor={`${id}-${option.value}`}
+                      >
+                        {option.label}
+                      </FieldLabel>
                       <FieldDescription>{option.description}</FieldDescription>
-                    )}
-                  </FieldContent>
-                  <RadioGroupItem
-                    aria-invalid={fieldState.invalid}
-                    id={`${id}-${option.value}`}
-                    value={option.value}
-                  />
+                    </FieldContent>
+                  ) : (
+                    <FieldLabel
+                      className="font-normal"
+                      htmlFor={`${id}-${option.value}`}
+                    >
+                      {option.label}
+                    </FieldLabel>
+                  )}
                 </Field>
-              </FieldLabel>
-            );
-          })}
+              ))}
         </RadioGroup>
       );
     }

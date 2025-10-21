@@ -168,6 +168,7 @@ const formConfig: FormConfig<FormValues> = [
     orientation: "vertical",
     type: "radio-group",
     config: {
+      style: "text",
       options: [
         { label: "邮件", value: "email" },
         {
