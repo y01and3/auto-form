@@ -184,6 +184,7 @@ const FormRender = ({
       return (
         <Field orientation="horizontal">
           <Checkbox
+            aria-label={config.config.label}
             checked={field.value}
             disabled={config.config.disabled}
             id={`${id}`}
@@ -227,6 +228,7 @@ const FormRender = ({
                     </FieldContent>
                     <Checkbox
                       aria-invalid={fieldState.invalid}
+                      aria-label={option.label}
                       checked={field.value.includes(option.value)}
                       disabled={option.disabled}
                       id={`${id}-${option.value}`}
@@ -253,6 +255,7 @@ const FormRender = ({
                 >
                   <Checkbox
                     aria-invalid={fieldState.invalid}
+                    aria-label={option.label}
                     checked={field.value.includes(option.value)}
                     disabled={option.disabled}
                     id={`${id}-${option.value}`}
