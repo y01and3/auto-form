@@ -43,6 +43,12 @@ export interface AutoFormProps<Schema extends z.ZodObject> {
   submitButtonName?: string;
 }
 
+const isSchemaFieldRequired = (formSchema: z.ZodObject, fieldName: string) => {
+  const fieldSchema = formSchema.shape[fieldName] as z.ZodType | undefined;
+
+  return Boolean(fieldSchema && !fieldSchema.isOptional());
+};
+
 const AutoForm = <Schema extends z.ZodObject>({
   formSchema,
   defaultValue,
@@ -56,18 +62,45 @@ const AutoForm = <Schema extends z.ZodObject>({
   resetButtonName,
   submitButtonName,
 }: AutoFormProps<Schema>) => {
+  const resolvedDefaultValues = React.useMemo(() => {
+    const fallbackValues: Record<string, unknown> = {};
+
+    for (const itemConfig of config) {
+      const fieldName = String(itemConfig.name);
+
+      if (!isSchemaFieldRequired(formSchema, fieldName)) {
+        continue;
+      }
+
+      switch (itemConfig.type) {
+        case "input":
+        case "textarea":
+        case "input-group":
+        case "textarea-group":
+          fallbackValues[fieldName] = "";
+          break;
+        case "checkbox":
+        case "switch":
+          fallbackValues[fieldName] = false;
+          break;
+        case "checkbox-group":
+          fallbackValues[fieldName] = [];
+          break;
+      }
+    }
+
+    return {
+      ...fallbackValues,
+      ...defaultValue,
+    } as DefaultValues<z.input<Schema>>;
+  }, [config, defaultValue, formSchema]);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: defaultValue,
+    defaultValues: resolvedDefaultValues,
   });
   const generatedId = React.useId();
   const formId = `form-${id ?? generatedId}`;
-
-  const isFieldRequired = (fieldName: string) => {
-    const fieldSchema = formSchema.shape[fieldName] as z.ZodType | undefined;
-
-    return Boolean(fieldSchema && !fieldSchema.isOptional());
-  };
 
   return (
     <div className={cn("w-full space-y-6", className)}>
@@ -80,7 +113,8 @@ const AutoForm = <Schema extends z.ZodObject>({
           {config.map((itemConfig, index) => {
             const fieldName = String(itemConfig.name);
             const required =
-              itemConfig.type !== "switch" && isFieldRequired(fieldName);
+              itemConfig.type !== "switch" &&
+              isSchemaFieldRequired(formSchema, fieldName);
 
             return (
               <React.Fragment key={`${formId}-${fieldName}`}>
