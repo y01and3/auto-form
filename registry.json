@@ -1,0 +1,47 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "auto-form",
+  "homepage": "https://y01and3.github.io/auto-form/",
+  "items": [
+    {
+      "name": "auto-form",
+      "type": "registry:component",
+      "title": "AutoForm",
+      "description": "Schema-driven dynamic form component built with react-hook-form, Zod, and shadcn/ui Field primitives.",
+      "dependencies": ["@hookform/resolvers", "react-hook-form", "zod"],
+      "registryDependencies": [
+        "button",
+        "checkbox",
+        "field",
+        "input",
+        "input-group",
+        "radio-group",
+        "select",
+        "switch",
+        "textarea"
+      ],
+      "files": [
+        {
+          "path": "src/components/AutoForm/AutoForm.tsx",
+          "type": "registry:component",
+          "target": "components/AutoForm/AutoForm.tsx"
+        },
+        {
+          "path": "src/components/AutoForm/AutoForm.type.ts",
+          "type": "registry:component",
+          "target": "components/AutoForm/AutoForm.type.ts"
+        },
+        {
+          "path": "src/components/AutoForm/FormRender.tsx",
+          "type": "registry:component",
+          "target": "components/AutoForm/FormRender.tsx"
+        },
+        {
+          "path": "src/components/AutoForm/index.ts",
+          "type": "registry:component",
+          "target": "components/AutoForm/index.ts"
+        }
+      ]
+    }
+  ]
+}
