@@ -12,14 +12,16 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof AutoForm<typeof formSchema>> = {
-  title: "AutoForm",
+  title: "components/AutoForm",
   component: AutoForm,
   parameters: {
     layout: "centered",
   },
   tags: ["autodocs"],
   argTypes: {},
-  args: {},
+  args: {
+    className: "w-[750px] max-w-full p-6",
+  },
 };
 
 export default meta;

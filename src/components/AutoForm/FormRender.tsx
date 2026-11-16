@@ -16,11 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   InputGroup,
-  InputGroupTextarea,
   InputGroupAddon,
-  InputGroupText,
-  InputGroupInput,
   InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -59,7 +59,8 @@ const FormRender = ({
         <Input
           {...field}
           aria-invalid={fieldState.invalid}
-          id={`${id}`}
+          id={id}
+          value={field.value ?? ""}
           {...config.config}
           required={required}
         />
@@ -69,7 +70,8 @@ const FormRender = ({
         <Textarea
           {...field}
           aria-invalid={fieldState.invalid}
-          id={`${id}`}
+          id={id}
+          value={field.value ?? ""}
           {...config.config}
           required={required}
         />
@@ -80,7 +82,8 @@ const FormRender = ({
           <InputGroupInput
             {...field}
             aria-invalid={fieldState.invalid}
-            id={`${id}`}
+            id={id}
+            value={field.value ?? ""}
             {...config.config.input}
             required={required}
           />
@@ -103,7 +106,8 @@ const FormRender = ({
           <InputGroupTextarea
             {...field}
             aria-invalid={fieldState.invalid}
-            id={`${id}`}
+            id={id}
+            value={field.value ?? ""}
             {...config.config.textarea}
             required={required}
           />
@@ -128,13 +132,13 @@ const FormRender = ({
           disabled={config.config.disabled}
           name={field.name}
           required={required}
-          value={field.value}
+          value={field.value ?? ""}
           onValueChange={field.onChange}
         >
           <SelectTrigger
             aria-invalid={fieldState.invalid}
             className={config.config.className}
-            id={`${id}`}
+            id={id}
             size={config.config.size}
           >
             <SelectValue placeholder={config.config.placeholder} />
@@ -151,7 +155,7 @@ const FormRender = ({
                       <SelectLabel>{option.label}</SelectLabel>
                       {option.children.map((opt) => (
                         <SelectItem
-                          key={`${id}-${opt}-${opt.value}`}
+                          key={`${id}-group-${option.label}-${opt.value}`}
                           value={opt.value}
                         >
                           {opt.label}
@@ -185,19 +189,22 @@ const FormRender = ({
         <Field orientation="horizontal">
           <Checkbox
             aria-label={config.config.label}
-            checked={field.value}
+            checked={Boolean(field.value)}
             disabled={config.config.disabled}
-            id={`${id}`}
+            id={id}
             name={field.name}
             required={required}
             onCheckedChange={field.onChange}
           />
-          <FieldLabel className={config.config.className} htmlFor={`${id}`}>
+          <FieldLabel className={config.config.className} htmlFor={id}>
             {config.config.label}
           </FieldLabel>
         </Field>
       );
     case "checkbox-group": {
+      const selectedValues: Array<string | number> = Array.isArray(field.value)
+        ? field.value
+        : [];
       const cardMod =
         !config.config.style || config.config.style === "auto"
           ? config.config.options.findIndex((option) => option.description) !==
@@ -229,16 +236,15 @@ const FormRender = ({
                     <Checkbox
                       aria-invalid={fieldState.invalid}
                       aria-label={option.label}
-                      checked={field.value.includes(option.value)}
+                      checked={selectedValues.includes(option.value)}
                       disabled={option.disabled}
                       id={`${id}-${option.value}`}
                       name={field.name}
                       onCheckedChange={(checked) => {
                         const newValue = checked
-                          ? [...field.value, option.value]
-                          : field.value.filter(
-                              (value: typeof option.value) =>
-                                value !== option.value,
+                          ? [...selectedValues, option.value]
+                          : selectedValues.filter(
+                              (value) => value !== option.value,
                             );
 
                         field.onChange(newValue);
@@ -256,16 +262,15 @@ const FormRender = ({
                   <Checkbox
                     aria-invalid={fieldState.invalid}
                     aria-label={option.label}
-                    checked={field.value.includes(option.value)}
+                    checked={selectedValues.includes(option.value)}
                     disabled={option.disabled}
                     id={`${id}-${option.value}`}
                     name={field.name}
                     onCheckedChange={(checked) => {
                       const newValue = checked
-                        ? [...field.value, option.value]
-                        : field.value.filter(
-                            (value: typeof option.value) =>
-                              value !== option.value,
+                        ? [...selectedValues, option.value]
+                        : selectedValues.filter(
+                            (value) => value !== option.value,
                           );
 
                       field.onChange(newValue);
@@ -308,7 +313,7 @@ const FormRender = ({
           aria-invalid={fieldState.invalid}
           name={field.name}
           required={required}
-          value={field.value}
+          value={field.value ?? ""}
           onValueChange={field.onChange}
         >
           {cardMod
@@ -331,6 +336,7 @@ const FormRender = ({
                     </FieldContent>
                     <RadioGroupItem
                       aria-invalid={fieldState.invalid}
+                      disabled={option.disabled}
                       id={`${id}-${option.value}`}
                       value={option.value}
                     />
@@ -345,6 +351,7 @@ const FormRender = ({
                 >
                   <RadioGroupItem
                     aria-invalid={fieldState.invalid}
+                    disabled={option.disabled}
                     id={`${id}-${option.value}`}
                     value={option.value}
                   />
@@ -375,8 +382,9 @@ const FormRender = ({
       return (
         <Switch
           aria-invalid={fieldState.invalid}
-          checked={field.value}
-          id={`${id}`}
+          checked={Boolean(field.value)}
+          disabled={config.config.disabled}
+          id={id}
           name={field.name}
           onCheckedChange={field.onChange}
         />

@@ -226,7 +226,7 @@ const formConfig: FormConfig<FormValues> = [
 
 const handleSubmit: SubmitHandler<FormValues> = (values) => {
   // eslint-disable-next-line no-console
-  console.log("提交成功", values);
+  setTimeout(() => console.log("提交成功", values), 1000);
 };
 
 const handleInvalid: SubmitErrorHandler<FormValues> = (errors) => {

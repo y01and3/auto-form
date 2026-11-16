@@ -18,7 +18,11 @@ export type FormConfig<T> = T extends object
     }[keyof T][]
   : never;
 
-type Merge<F, S, T = F & S> = { [K in keyof T]: T[K] };
+type Merge<F extends object, S extends object> = F & S extends infer T
+  ? {
+      [K in keyof T]: T[K];
+    }
+  : never;
 
 export type ItemConfig = {
   [K in keyof Config]: {
