@@ -10,7 +10,20 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+coverage
 *.local
+
+# Yarn Berry
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Nix & direnv
+.direnv
+.nix-node-bin
 
 # Editor directories and files
 .vscode/*
@@ -23,5 +36,7 @@ dist-ssr
 *.sln
 *.sw?
 
+# Storybook & Registry output
 *storybook.log
 storybook-static
+public/r

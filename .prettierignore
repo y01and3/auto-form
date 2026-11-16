@@ -1,4 +1,10 @@
 node_modules
 dist
 dist-ssr
+coverage
+storybook-static
+public/r
+.yarn
+.direnv
+.nix-node-bin
 *.local

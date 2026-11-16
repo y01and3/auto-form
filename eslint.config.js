@@ -17,13 +17,18 @@ export default defineConfig(
   [
     globalIgnores([
       "dist",
+      "storybook-static",
+      "coverage",
       "*.css",
       "public/*",
       ".DS_Store",
       "node_modules",
+      ".yarn",
+      ".direnv",
+      ".nix-node-bin",
       ".react-router",
       "!.storybook",
-      "src/components/ui/*"
+      "src/components/ui/*",
     ]),
     ...storybook.configs["flat/recommended"],
     reactHooks.configs.flat.recommended,
@@ -61,7 +66,6 @@ export default defineConfig(
         "react/prop-types": "off",
         "react/jsx-uses-react": "off",
         "react/react-in-jsx-scope": "off",
-        "react-hooks/exhaustive-deps": "off",
         "jsx-a11y/click-events-have-key-events": "warn",
         "jsx-a11y/interactive-supports-focus": "warn",
         "no-unused-vars": "off",
